@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Explore signed LLS sequences, edit broken lines, draw combinations with adjacent duals, and export TikZ.">
+  <title>Signed LLS Explorer</title><link rel="stylesheet" href="style.css">
+  <script src="signed_lls.js" defer></script><script src="lls_math.js" defer></script><script src="point_input.js" defer></script><script src="tikz.js" defer></script><script src="app.js" defer></script>
+</head>
+<body><main>
+  <header class="page-heading">
+    <p class="eyebrow"><span class="mini-line" aria-hidden="true">⌁</span> LATTICE GEOMETRY</p>
+    <h1>Signed LLS Explorer</h1><p class="intro">Draw from a sequence, or shape the line yourself.</p><p class="initial">Fixed origin: O = (0, 0)</p>
+  </header>
+  <section class="input-panel" aria-label="Sequence controls"><form id="sequence-form" novalidate>
+    <label for="sequence">Signed LLS sequence</label>
+    <div class="input-row"><input id="sequence" name="sequence" type="text" value="[1;2,-1,2,1,-1,3,-1,3]" spellcheck="false" autocomplete="off" aria-describedby="input-help canonical-help error-message"><button type="submit" class="primary">Draw from LLS <span aria-hidden="true">↗</span></button></div>
+    <div class="input-bottom"><p id="input-help">Use an odd number of terms. Fractions such as 1/2 work. Edge terms must be nonzero; angle terms may be zero.</p><button type="button" id="reset" class="text-button">Reset example</button></div>
+    <p id="canonical-help" class="canonical-help">Draw from LLS replaces the line with its canonical representative: A₀ = (1, 0), A₁ = (1, a₀). Point edits keep your chosen coordinates.</p>
+    <p id="error-message" class="error" role="alert" hidden></p>
+  </form></section>
+  <section class="input-panel point-list-panel" aria-label="Coordinate list input"><form id="point-list-form" novalidate>
+    <div class="point-list-heading"><label for="point-list">Vertex coordinates</label><button id="use-current-points" type="button" class="text-button">Use current vertices</button></div>
+    <textarea id="point-list" name="point-list" rows="3" spellcheck="false" autocomplete="off" placeholder="[(1, 0), (1, 1), (-1, -2)]" aria-describedby="point-list-help point-list-status point-list-error"></textarea>
+    <div class="point-list-bottom"><p id="point-list-help">Paste [(1, 0), (1, 1), (−1, −2)], a list of [x, y] pairs, or one x, y pair per line. Decimals, fractions, and scientific notation work. Use at least two points, in traversal order.</p><button type="submit" class="primary">Draw from coordinates <span aria-hidden="true">↗</span></button></div>
+    <p class="canonical-help">Draw from coordinates replaces all vertices with your list and computes their signed LLS. Your coordinates are preserved; the origin stays at O = (0, 0).</p>
+    <p id="point-list-status" class="point-list-status" aria-live="polite"></p><p id="point-list-error" class="error" role="alert" hidden></p>
+  </form></section>
+  <section class="sequence-summary" aria-label="Current geometry summary"><div><div id="counts" class="counts"></div><p id="source-status" class="source-status" aria-live="polite"></p></div><div class="legend"><span><i class="dot blue"></i> Signed edge term</span><span><i class="dot amber"></i> Signed angle term</span></div></section>
+  <div id="sequence-terms" class="sequence-terms" aria-label="Computed LLS terms"></div><div id="geometry-diagnostics" class="diagnostics" role="status" hidden></div>
+  <div class="workspace">
+    <section class="plot-panel" aria-label="Broken line editor">
+      <div class="plot-heading"><h2>Broken line</h2><span>Follow the arrows</span></div>
+      <div class="editor-toolbar"><fieldset class="mode-switch"><legend class="sr-only">Plot interaction mode</legend><label><input type="radio" name="edit-mode" value="move" checked><span>Move vertices</span></label><label><input type="radio" name="edit-mode" value="add"><span>Add vertices</span></label></fieldset><div class="toolbar-actions"><button id="fit" type="button" class="small-button">Fit view</button><button id="undo" type="button" class="small-button" disabled>Undo</button><button id="new-line" type="button" class="small-button">New line</button></div></div>
+      <p id="mode-help" class="mode-help">Drag a vertex to move it. You can also edit its coordinates in the table.</p>
+      <svg id="plot" viewBox="0 0 760 620" role="img" aria-labelledby="plot-title plot-description"></svg>
+      <div class="plot-footer"><span>Equal scale on both axes</span><span id="scale-note"></span></div>
+    </section>
+    <aside>
+      <section class="vertices-panel"><div class="section-heading"><h2>Vertices</h2><button id="copy" class="small-button" type="button">Copy</button></div><p class="muted">Edit x or y, then press Enter or leave the field.</p>
+        <div class="table-scroll"><table><thead><tr><th scope="col">Point</th><th scope="col">x</th><th scope="col">y</th><th scope="col"><span class="sr-only">Remove</span></th></tr></thead><tbody id="vertices"></tbody></table></div>
+        <p id="no-vertices" class="muted" hidden>No vertices yet. Click the plot in Add vertices mode, or enter coordinates below.</p>
+        <form id="append-form" class="append-form" novalidate><label class="append-heading" for="append-x">Append a vertex</label><div class="append-row"><label><span class="sr-only">New vertex x coordinate</span><input id="append-x" type="text" inputmode="decimal" placeholder="x" autocomplete="off"></label><label><span class="sr-only">New vertex y coordinate</span><input id="append-y" type="text" inputmode="decimal" placeholder="y" autocomplete="off"></label><button type="submit" class="small-button">Add</button></div></form>
+        <p id="coordinate-error" class="error compact" role="alert" hidden></p>
+      </section>
+      <section class="display-panel" aria-label="Display and editing options"><h2>Display &amp; editing</h2><label class="toggle"><input id="labels" type="checkbox" checked><span>Show LLS labels</span></label><label class="toggle"><input id="point-labels" type="checkbox" checked><span>Show vertex names</span></label><label class="toggle nested-toggle"><input id="even-point-labels" type="checkbox" checked><span>Show even-indexed names (A₀, A₂, …)</span></label><label class="toggle"><input id="lattice" type="checkbox" checked><span>Show lattice</span></label><label class="toggle"><input id="snap" type="checkbox" checked><span>Snap pointer to integer lattice</span></label><p class="option-note">Coordinate fields always accept real numbers.</p></section>
+      <p id="passage-note" class="passage-note" hidden></p><p id="precision-note" class="precision-note" hidden></p>
+    </aside>
+  </div>
+  <div class="tools-grid">
+    <section class="tool-panel" aria-labelledby="dual-heading"><div class="section-heading"><h2 id="dual-heading">Adjacent dual</h2><button id="compute-dual" type="button" class="small-button">Compute dual</button></div><p class="tool-description">Compute the adjacent-angle dual of the current plotted LLS without changing the line. Choose Draw dual to draw its canonical representative.</p><p class="source-hint">Definition 5.15, p. 65. For other real inputs, the same formula is a formal extension.</p><p id="dual-status" class="muted" aria-live="polite">Compute the dual of the current sequence.</p>
+      <div id="dual-result" hidden><label for="dual-output" class="sr-only">Adjacent dual sequence</label><textarea id="dual-output" rows="2" readonly spellcheck="false"></textarea><div id="dual-warnings" class="tool-warnings" hidden></div><div class="tool-actions"><button id="draw-dual" type="button" class="small-button">Draw dual</button><button id="copy-dual" type="button" class="small-button">Copy sequence</button></div></div>
+      <div class="combination-tool" role="group" aria-label="LLS concatenations"><div class="section-heading"><h3 id="combination-heading">LLS + dual</h3><button id="draw-combination" type="button" class="small-button" aria-describedby="combination-help">Draw LLS + dual</button></div><p id="combination-help" class="tool-description">Compute the dual b of the current LLS a, then draw the canonical line for <span class="combination-formula">[a₀; …, a₂ₙ, −1, b₀, …, b₂ₘ]</span>.</p>
+        <div class="section-heading reversed-combination-heading"><h3 id="reversed-combination-heading">LLS + reversed dual</h3><button id="draw-reversed-combination" type="button" class="small-button" aria-describedby="reversed-combination-help">Draw LLS + reversed dual</button></div><p id="reversed-combination-help" class="tool-description">Compute the dual b, reverse its coefficient order, and draw the canonical line for <span class="combination-formula">[a₀; …, a₂ₙ, −1, b₂ₘ, b₂ₘ₋₁, …, b₀]</span>. Coefficient signs are preserved.</p><p id="combination-status" class="muted" aria-live="polite">Both actions use the current plotted LLS. Undo restores the previous line.</p>
+        <div id="combination-result" hidden><label for="combination-output" class="sr-only">Combined LLS sequence</label><textarea id="combination-output" rows="3" readonly spellcheck="false"></textarea><div id="combination-warnings" class="tool-warnings" hidden></div><div class="tool-actions"><button id="copy-combination" type="button" class="small-button">Copy combination</button></div></div>
+      </div>
+    </section>
+    <section class="tool-panel" aria-labelledby="tikz-heading"><div class="section-heading"><h2 id="tikz-heading">TikZ export</h2><button id="generate-tikz" type="button" class="small-button">Generate TikZ</button></div><p class="tool-description">Export the current vertices as a standalone LaTeX document. The LLS labels and grid follow your display options.</p><p id="tikz-status" class="muted" aria-live="polite">Generate code when the line is ready.</p>
+      <div id="tikz-result" hidden><label for="tikz-output" class="sr-only">Generated TikZ code</label><textarea id="tikz-output" rows="9" readonly spellcheck="false"></textarea><div class="tool-actions"><button id="copy-tikz" type="button" class="small-button">Copy code</button><button id="download-tikz" type="button" class="small-button">Download .tex</button></div></div>
+    </section>
+  </div>
+  <section id="manual-copy" class="tool-panel manual-copy" aria-labelledby="manual-copy-heading" hidden><div class="section-heading"><h2 id="manual-copy-heading">Copy text</h2><button id="close-manual-copy" type="button" class="small-button">Close</button></div><p class="tool-description" role="status">Your browser requires manual copying here. The text is selected below; press Ctrl+C or ⌘C, or use your device’s Copy command.</p><label for="manual-copy-text" class="sr-only">Text to copy manually</label><textarea id="manual-copy-text" rows="6" readonly spellcheck="false"></textarea></section>
+  <footer>A sequence of 2m + 1 terms specifies m + 1 edges and m + 2 vertices. Moving or adding vertices computes their signed LLS without changing their coordinates.</footer>
+</main></body></html>
