@@ -1,5 +1,7 @@
 # Signed LLS Explorer
 
+**[Open the live app](https://maximarnold.github.io/signed-lls-explorer/)**
+
 An interactive editor for signed length–sine (LLS) sequences and directed
 broken lines, with the origin fixed at `O = (0, 0)`.
 
