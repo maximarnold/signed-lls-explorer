@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Explore signed LLS sequences, edit broken lines, draw combinations with adjacent duals, and export TikZ.">
+  <title>Signed LLS Explorer</title><style data-source="style.css">
+:root{--paper:#f7f6f1;--ink:#1c3343;--muted:#697981;--rule:#e2e5e3;--blue:#216f98;--amber:#ad641f;--blue-soft:#edf5f8;--amber-soft:#fbf1e5;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #77b4d3;outline-offset:3px}main{max-width:1280px;margin:0 auto;padding:42px 44px 24px}.page-heading{margin-bottom:28px}.eyebrow{font-size:11px;font-weight:750;letter-spacing:2px;color:var(--blue);display:flex;align-items:center;gap:10px;margin:0 0 14px}.mini-line{font-size:30px;line-height:16px;letter-spacing:0}h1{font-size:38px;font-weight:650;letter-spacing:-1.4px;line-height:1.12;margin:0 0 10px}.intro{color:var(--muted);font-size:16px;margin:0 0 14px}.initial{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;margin:0;color:#516772}.initial span{color:#bdc7ca;padding:0 13px}.input-panel{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:20px 22px 15px;box-shadow:0 3px 12px #1c334303}form>label{display:block;font-size:12px;font-weight:700;letter-spacing:.2px;margin:0 0 9px}.input-row{display:flex;gap:12px}.input-row input{flex:1;min-width:0;border:1px solid #cfd7d9;border-radius:8px;background:#fbfcfb;padding:13px 15px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:16px;color:var(--ink)}.input-row input[aria-invalid=true]{border-color:#b44c3c}.primary{border:0;border-radius:8px;background:var(--ink);color:white;font-size:14px;font-weight:650;padding:0 24px;white-space:nowrap}.primary span{margin-left:17px;color:#9fc2d0;font-size:20px}.primary:hover{background:#2b485a}.input-bottom{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:10px}.input-bottom p{font-size:11.5px;color:var(--muted);margin:0;line-height:1.6}.text-button{border:0;background:none;padding:2px 0;font-size:12px;font-weight:600;color:var(--blue);white-space:nowrap}.text-button:hover{text-decoration:underline}.error{color:#9a3e2d;background:#fff1ed;border-radius:7px;font-size:13px;line-height:1.5;padding:11px 13px;margin:12px 0 0}.sequence-summary{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:24px 0 12px}.counts{display:flex;gap:18px;color:var(--muted);font-size:12px}.counts strong{font-weight:700;color:var(--ink);font-size:15px;margin-right:4px}.legend{display:flex;gap:18px;font-size:11px;color:var(--muted)}.legend span{display:inline-flex;align-items:center;gap:6px}.dot{width:7px;height:7px;display:inline-block;border-radius:50%}.blue{background:var(--blue)}.amber{background:var(--amber)}.sequence-terms{display:flex;gap:5px;overflow-x:auto;margin-bottom:19px;padding-bottom:3px}.term{flex:0 0 55px;min-width:55px;text-align:center;border:1px solid #dfebf0;border-radius:7px;padding:6px 9px;background:var(--blue-soft);color:var(--blue)}.term.angle{border-color:#f0e3d2;background:var(--amber-soft);color:var(--amber)}.term small{display:block;opacity:.78;font-size:10px;margin-bottom:3px}.term strong{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:16px;font-weight:650}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:20px;align-items:start}.plot-panel,.vertices-panel,.display-panel{background:#fff;border:1px solid var(--rule);border-radius:13px}.plot-heading{display:flex;align-items:center;justify-content:space-between;padding:19px 22px 0}h2{font-size:14px;letter-spacing:-.1px;margin:0;font-weight:650}.plot-heading span,.plot-footer{font-size:11px;color:#819098}#plot{width:100%;height:auto;display:block;max-height:640px}.plot-footer{padding:0 22px 17px;display:flex;justify-content:space-between;gap:12px}.vertices-panel{padding:19px 20px 10px}.section-heading{display:flex;align-items:center;justify-content:space-between}.small-button{border:1px solid #d9e1e4;border-radius:5px;background:white;color:var(--blue);font-size:11px;padding:5px 9px;min-width:49px}.small-button:hover{background:var(--blue-soft)}.muted{color:var(--muted);font-size:11px;margin:8px 0 16px}.table-scroll{max-height:340px;overflow:auto}table{width:100%;border-collapse:collapse;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px}th{text-align:right;font:10px ui-sans-serif,sans-serif;color:#849199;padding:0 0 8px;border-bottom:1px solid var(--rule)}th:first-child,td:first-child{text-align:left}td{text-align:right;padding:12px 0;border-bottom:1px solid #f0f2f1;font-variant-numeric:tabular-nums}td:first-child{font-weight:650;color:var(--blue);font-family:ui-sans-serif,sans-serif}tr:last-child td{border:0}.display-panel{padding:18px 20px;margin-top:15px}.display-panel h2{margin-bottom:15px}.toggle{display:flex;align-items:center;gap:9px;color:#516772;font-size:12px;margin:12px 0 0;cursor:pointer}.toggle input{accent-color:var(--blue);width:15px;height:15px;margin:0}.passage-note,.precision-note{border-left:2px solid #c9a880;padding:1px 0 1px 13px;color:#766b5b;font-size:12px;line-height:1.7;margin:19px 3px 0}.precision-note{border-color:#d69e5a}.empty-state{text-align:center;padding:70px 20px;color:var(--muted)}.empty-state h2{font-size:21px;color:var(--ink)}.empty-state p{font-size:14px}footer{font-size:11px;line-height:1.7;color:#839098;margin-top:25px}svg text{font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}svg .lls-tag text{font-size:13px;font-weight:600}svg .vertex-label{font-size:14px;font-weight:650;paint-order:stroke;stroke:#fff;stroke-width:4;stroke-linejoin:round}svg .tick{font-size:11px;fill:#94a2a9}svg .axis-label{font-size:13px;fill:#7b8d96;font-style:italic}[hidden]{display:none!important}@media(max-width:900px){main{padding:30px 22px 20px}.workspace{grid-template-columns:minmax(0,1fr) 235px;gap:14px}.vertices-panel,.display-panel{padding-left:15px;padding-right:15px}.legend{gap:11px}.counts{gap:11px}h1{font-size:33px}}@media(max-width:700px){main{padding:25px 16px 20px}.workspace{grid-template-columns:1fr}.page-heading{margin-bottom:22px}.input-panel{padding:17px 15px 13px}.input-row{gap:8px}.input-row input{font-size:13px;padding:12px 10px}.primary{padding:0 13px;font-size:12px}.primary span{display:none}.input-bottom{align-items:flex-start}.input-bottom p{font-size:10px;max-width:76%}.sequence-summary{align-items:flex-start;flex-direction:column;gap:11px;padding-top:19px}.sequence-terms{margin-bottom:14px}.legend{font-size:10px}#plot{max-height:600px}.plot-heading{padding:17px 17px 0}.plot-footer{padding:0 17px 16px;font-size:10px}.vertices-panel{padding:18px 20px 10px}aside{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}.display-panel{margin-top:0;padding:18px 15px}.passage-note,.precision-note{grid-column:1/-1;margin-top:0}.initial{font-size:11px}.initial span{padding:0 7px}.table-scroll{max-height:280px}footer{font-size:10px}.plot-heading span{font-size:10px}h1{font-size:30px}.intro{font-size:14px}}
+
+/* Geometry editing and export tools. */
+.nested-toggle{margin-left:24px}.toggle input:disabled+span{opacity:.5}.manual-copy{margin-top:20px}
+.point-list-panel{margin-top:14px}.point-list-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:10px}.point-list-heading label{font-size:12px;font-weight:700;letter-spacing:.2px}.point-list-panel textarea{display:block;width:100%;min-height:84px;resize:vertical;border:1px solid #cfd7d9;border-radius:8px;background:#fbfcfb;padding:12px 15px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--ink)}.point-list-panel textarea:focus-visible{outline:3px solid #77b4d3;outline-offset:3px}.point-list-panel textarea[aria-invalid=true]{border-color:#b44c3c}.point-list-bottom{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:11px}.point-list-bottom p{font-size:11.5px;line-height:1.65;color:var(--muted);margin:0;max-width:760px}.point-list-bottom .primary{padding:10px 16px;flex-shrink:0}.point-list-bottom .primary span{margin-left:10px}.point-list-status{font-size:11px;line-height:1.6;color:#6c7f89;margin:10px 0 0}
+@media(max-width:700px){.point-list-heading{align-items:flex-start}.point-list-heading .text-button{font-size:11px}.point-list-panel textarea{font-size:12px;padding:10px}.point-list-bottom{align-items:flex-start;flex-direction:column;gap:10px}.point-list-bottom p{font-size:10px}.point-list-bottom .primary{font-size:12px;padding:11px 14px}.point-list-status{font-size:10px}}
+.combination-tool{border-top:1px solid var(--rule);margin-top:20px;padding-top:18px}.combination-tool h3{font-size:13px;font-weight:650;margin:0}.combination-formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--ink)}.reversed-combination-heading{margin-top:18px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.workspace{grid-template-columns:minmax(0,1fr) 330px}.canonical-help{font-size:11px;line-height:1.65;color:#77878d;margin:10px 0 0}.source-status{font-size:11px;color:#6c7f89;margin:8px 0 0;line-height:1.5}.sequence-summary{align-items:flex-start}.legend{padding-top:3px;flex-shrink:0}.term.undefined{background:#fbefeb;border-color:#efd1c4;color:#a45738;min-width:94px}.term.undefined strong{font-size:11px}.diagnostics{border:1px solid #ecd5be;border-radius:8px;background:#fff8ef;padding:10px 14px;margin:0 0 17px;color:#815c36;font-size:12px;line-height:1.65}.diagnostics p{margin:0}.diagnostics p+p{margin-top:5px}.plot-panel{overflow:hidden}.editor-toolbar{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;padding:16px 20px 0}.mode-switch{display:flex;border:1px solid #d5dfe3;background:#f5f8f8;border-radius:7px;margin:0;padding:3px;gap:2px}.mode-switch label{position:relative;cursor:pointer}.mode-switch input{position:absolute;opacity:0;width:1px;height:1px}.mode-switch span{display:block;padding:7px 10px;border-radius:4px;font-size:11px;color:#617581;white-space:nowrap}.mode-switch input:checked+span{background:white;color:var(--blue);box-shadow:0 1px 4px #1c334317;font-weight:650}.mode-switch input:focus-visible+span{outline:3px solid #77b4d3;outline-offset:1px}.toolbar-actions{display:flex;gap:5px}.toolbar-actions .small-button{padding:7px 8px;font-size:10px}.mode-help{font-size:11px;line-height:1.6;color:#7a8b93;padding:0 22px;margin:10px 0 0}#plot{touch-action:none;user-select:none}#plot.add-mode,#plot.add-mode .vertex-hit,#plot.add-mode .vertex-dot{cursor:crosshair}.vertex-hit,.vertex-dot{cursor:grab}#plot.dragging,#plot.dragging .vertex-hit,#plot.dragging .vertex-dot{cursor:grabbing}button:disabled{opacity:.45;cursor:not-allowed}.vertices-panel{padding-left:17px;padding-right:17px}.vertices-panel .muted{font-size:10.5px;line-height:1.6}.table-scroll{max-height:390px}table{table-layout:fixed}th:first-child,td:first-child{width:35px}th:last-child,td:last-child{width:27px}td{padding:7px 3px}.coordinate-input{display:block;width:100%;min-width:0;border:1px solid #dce4e7;border-radius:5px;padding:7px 6px;background:#fbfcfc;color:var(--ink);font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;text-align:right}.coordinate-input:hover{border-color:#b4cad6}.coordinate-input[aria-invalid=true]{border-color:#b85b43}.remove-point{border:0;background:none;padding:5px 4px;color:#98a5ab;font-size:19px;line-height:1;border-radius:3px}.remove-point:hover{color:#a54d3e;background:#fbefeb}.append-form{border-top:1px solid #e4e9e8;margin-top:13px;padding-top:14px;padding-bottom:6px}.append-heading{font-size:10px!important;color:#72848b;font-weight:600!important}.append-row{display:flex;gap:7px;align-items:center}.append-row label{flex:1;min-width:0}.append-row input{width:100%;min-width:0;padding:8px;border:1px solid #d6e0e4;border-radius:5px;background:#fbfcfc;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px}.append-row button{padding:8px 12px}.error.compact{font-size:11px;margin:10px 0 7px;padding:8px 10px}.option-note{color:#87959b;font-size:10px;line-height:1.5;margin:13px 0 0}.toggle{font-size:11.5px}.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;align-items:start}.tool-panel{padding:20px 22px;border:1px solid var(--rule);border-radius:13px;background:#fff;min-width:0}.tool-description{font-size:12px;line-height:1.7;color:#697d88;margin:13px 0 9px}.source-hint{font-size:10px;line-height:1.6;color:#89969b;margin:0 0 11px}.tool-panel .muted{font-size:11px;line-height:1.6;margin:12px 0 0}.tool-panel textarea{width:100%;resize:vertical;border:1px solid #d9e2e6;border-radius:7px;background:#f9fbfb;padding:11px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;line-height:1.7;color:#3b596b;margin-top:13px;white-space:pre;overflow:auto}.tool-panel textarea:focus-visible{outline:3px solid #77b4d3;outline-offset:2px}.tool-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.tool-actions button{font-size:11px;padding:7px 11px}.tool-warnings{font-size:11px;line-height:1.65;color:#91673c;padding:8px 0 0}.tool-warnings p{margin:4px 0}.tool-panel .section-heading{gap:10px}.tool-panel .section-heading button{white-space:nowrap}.plot-heading{padding-top:18px}
+@media(max-width:1100px){.workspace{grid-template-columns:minmax(0,1fr) 300px}.editor-toolbar{padding-left:16px;padding-right:16px}.mode-help{padding-left:16px;padding-right:16px}.sequence-summary{gap:10px}.legend{font-size:10px;gap:10px}.tools-grid{gap:14px}}
+@media(max-width:900px){.workspace{grid-template-columns:minmax(0,1fr) 270px}.vertices-panel{padding-left:13px;padding-right:13px}.coordinate-input{font-size:11px;padding:7px 4px}.table-scroll{max-height:330px}.sequence-summary{flex-wrap:wrap}.tool-panel{padding:18px 17px}.tool-panel .section-heading{align-items:flex-start;flex-wrap:wrap}.mode-switch span{font-size:10px;padding:7px 8px}.editor-toolbar{gap:10px}.toolbar-actions{margin-left:auto}.canonical-help{font-size:10px}}
+@media(max-width:700px){.workspace{grid-template-columns:1fr}.tools-grid{grid-template-columns:1fr}.legend{padding-top:0}.sequence-summary{gap:8px}.source-status{font-size:10px}.vertices-panel{padding:18px 17px 10px}aside{grid-template-columns:1fr}.display-panel{padding:18px 17px}.coordinate-input{font-size:12px;padding:8px}.table-scroll{max-height:310px}.mode-switch span{font-size:11px}.toolbar-actions .small-button{font-size:10px}.editor-toolbar{padding:14px 16px 0}.mode-help{font-size:10px}.canonical-help{font-size:10px;margin-top:8px}.input-row input{font-size:12px}.input-row .primary{font-size:11px;padding:0 10px}.tool-panel{padding:18px}.tool-panel .section-heading{align-items:center}.toggle{font-size:12px}.display-panel h2{margin-bottom:12px}.option-note{margin-top:12px}}
+
+</style>
+  
+</head>
+<body><main>
+  <header class="page-heading">
+    <p class="eyebrow"><span class="mini-line" aria-hidden="true">⌁</span> LATTICE GEOMETRY</p>
+    <h1>Signed LLS Explorer</h1><p class="intro">Draw from a sequence, or shape the line yourself.</p><p class="initial">Fixed origin: O = (0, 0)</p>
+  </header>
+  <section class="input-panel" aria-label="Sequence controls"><form id="sequence-form" novalidate>
+    <label for="sequence">Signed LLS sequence</label>
+    <div class="input-row"><input id="sequence" name="sequence" type="text" value="[1;2,-1,2,1,-1,3,-1,3]" spellcheck="false" autocomplete="off" aria-describedby="input-help canonical-help error-message"><button type="submit" class="primary">Draw from LLS <span aria-hidden="true">↗</span></button></div>
+    <div class="input-bottom"><p id="input-help">Use an odd number of terms. Fractions such as 1/2 work. Edge terms must be nonzero; angle terms may be zero.</p><button type="button" id="reset" class="text-button">Reset example</button></div>
+    <p id="canonical-help" class="canonical-help">Draw from LLS replaces the line with its canonical representative: A₀ = (1, 0), A₁ = (1, a₀). Point edits keep your chosen coordinates.</p>
+    <p id="error-message" class="error" role="alert" hidden></p>
+  </form></section>
+  <section class="input-panel point-list-panel" aria-label="Coordinate list input"><form id="point-list-form" novalidate>
+    <div class="point-list-heading"><label for="point-list">Vertex coordinates</label><button id="use-current-points" type="button" class="text-button">Use current vertices</button></div>
+    <textarea id="point-list" name="point-list" rows="3" spellcheck="false" autocomplete="off" placeholder="[(1, 0), (1, 1), (-1, -2)]" aria-describedby="point-list-help point-list-status point-list-error"></textarea>
+    <div class="point-list-bottom"><p id="point-list-help">Paste [(1, 0), (1, 1), (−1, −2)], a list of [x, y] pairs, or one x, y pair per line. Decimals, fractions, and scientific notation work. Use at least two points, in traversal order.</p><button type="submit" class="primary">Draw from coordinates <span aria-hidden="true">↗</span></button></div>
+    <p class="canonical-help">Draw from coordinates replaces all vertices with your list and computes their signed LLS. Your coordinates are preserved; the origin stays at O = (0, 0).</p>
+    <p id="point-list-status" class="point-list-status" aria-live="polite"></p><p id="point-list-error" class="error" role="alert" hidden></p>
+  </form></section>
+  <section class="sequence-summary" aria-label="Current geometry summary"><div><div id="counts" class="counts"></div><p id="source-status" class="source-status" aria-live="polite"></p></div><div class="legend"><span><i class="dot blue"></i> Signed edge term</span><span><i class="dot amber"></i> Signed angle term</span></div></section>
+  <div id="sequence-terms" class="sequence-terms" aria-label="Computed LLS terms"></div><div id="geometry-diagnostics" class="diagnostics" role="status" hidden></div>
+  <div class="workspace">
+    <section class="plot-panel" aria-label="Broken line editor">
+      <div class="plot-heading"><h2>Broken line</h2><span>Follow the arrows</span></div>
+      <div class="editor-toolbar"><fieldset class="mode-switch"><legend class="sr-only">Plot interaction mode</legend><label><input type="radio" name="edit-mode" value="move" checked><span>Move vertices</span></label><label><input type="radio" name="edit-mode" value="add"><span>Add vertices</span></label></fieldset><div class="toolbar-actions"><button id="fit" type="button" class="small-button">Fit view</button><button id="undo" type="button" class="small-button" disabled>Undo</button><button id="new-line" type="button" class="small-button">New line</button></div></div>
+      <p id="mode-help" class="mode-help">Drag a vertex to move it. You can also edit its coordinates in the table.</p>
+      <svg id="plot" viewBox="0 0 760 620" role="img" aria-labelledby="plot-title plot-description"></svg>
+      <div class="plot-footer"><span>Equal scale on both axes</span><span id="scale-note"></span></div>
+    </section>
+    <aside>
+      <section class="vertices-panel"><div class="section-heading"><h2>Vertices</h2><button id="copy" class="small-button" type="button">Copy</button></div><p class="muted">Edit x or y, then press Enter or leave the field.</p>
+        <div class="table-scroll"><table><thead><tr><th scope="col">Point</th><th scope="col">x</th><th scope="col">y</th><th scope="col"><span class="sr-only">Remove</span></th></tr></thead><tbody id="vertices"></tbody></table></div>
+        <p id="no-vertices" class="muted" hidden>No vertices yet. Click the plot in Add vertices mode, or enter coordinates below.</p>
+        <form id="append-form" class="append-form" novalidate><label class="append-heading" for="append-x">Append a vertex</label><div class="append-row"><label><span class="sr-only">New vertex x coordinate</span><input id="append-x" type="text" inputmode="decimal" placeholder="x" autocomplete="off"></label><label><span class="sr-only">New vertex y coordinate</span><input id="append-y" type="text" inputmode="decimal" placeholder="y" autocomplete="off"></label><button type="submit" class="small-button">Add</button></div></form>
+        <p id="coordinate-error" class="error compact" role="alert" hidden></p>
+      </section>
+      <section class="display-panel" aria-label="Display and editing options"><h2>Display &amp; editing</h2><label class="toggle"><input id="labels" type="checkbox" checked><span>Show LLS labels</span></label><label class="toggle"><input id="point-labels" type="checkbox" checked><span>Show vertex names</span></label><label class="toggle nested-toggle"><input id="even-point-labels" type="checkbox" checked><span>Show even-indexed names (A₀, A₂, …)</span></label><label class="toggle"><input id="lattice" type="checkbox" checked><span>Show lattice</span></label><label class="toggle"><input id="snap" type="checkbox" checked><span>Snap pointer to integer lattice</span></label><p class="option-note">Coordinate fields always accept real numbers.</p></section>
+      <p id="passage-note" class="passage-note" hidden></p><p id="precision-note" class="precision-note" hidden></p>
+    </aside>
+  </div>
+  <div class="tools-grid">
+    <section class="tool-panel" aria-labelledby="dual-heading"><div class="section-heading"><h2 id="dual-heading">Adjacent dual</h2><button id="compute-dual" type="button" class="small-button">Compute dual</button></div><p class="tool-description">Compute the adjacent-angle dual of the current plotted LLS without changing the line. Choose Draw dual to draw its canonical representative.</p><p class="source-hint">Definition 5.15, p. 65. For other real inputs, the same formula is a formal extension.</p><p id="dual-status" class="muted" aria-live="polite">Compute the dual of the current sequence.</p>
+      <div id="dual-result" hidden><label for="dual-output" class="sr-only">Adjacent dual sequence</label><textarea id="dual-output" rows="2" readonly spellcheck="false"></textarea><div id="dual-warnings" class="tool-warnings" hidden></div><div class="tool-actions"><button id="draw-dual" type="button" class="small-button">Draw dual</button><button id="copy-dual" type="button" class="small-button">Copy sequence</button></div></div>
+      <div class="combination-tool" role="group" aria-label="LLS concatenations"><div class="section-heading"><h3 id="combination-heading">LLS + dual</h3><button id="draw-combination" type="button" class="small-button" aria-describedby="combination-help">Draw LLS + dual</button></div><p id="combination-help" class="tool-description">Compute the dual b of the current LLS a, then draw the canonical line for <span class="combination-formula">[a₀; …, a₂ₙ, −1, b₀, …, b₂ₘ]</span>.</p>
+        <div class="section-heading reversed-combination-heading"><h3 id="reversed-combination-heading">LLS + reversed dual</h3><button id="draw-reversed-combination" type="button" class="small-button" aria-describedby="reversed-combination-help">Draw LLS + reversed dual</button></div><p id="reversed-combination-help" class="tool-description">Compute the dual b, reverse its coefficient order, and draw the canonical line for <span class="combination-formula">[a₀; …, a₂ₙ, −1, b₂ₘ, b₂ₘ₋₁, …, b₀]</span>. Coefficient signs are preserved.</p><p id="combination-status" class="muted" aria-live="polite">Both actions use the current plotted LLS. Undo restores the previous line.</p>
+        <div id="combination-result" hidden><label for="combination-output" class="sr-only">Combined LLS sequence</label><textarea id="combination-output" rows="3" readonly spellcheck="false"></textarea><div id="combination-warnings" class="tool-warnings" hidden></div><div class="tool-actions"><button id="copy-combination" type="button" class="small-button">Copy combination</button></div></div>
+      </div>
+    </section>
+    <section class="tool-panel" aria-labelledby="tikz-heading"><div class="section-heading"><h2 id="tikz-heading">TikZ export</h2><button id="generate-tikz" type="button" class="small-button">Generate TikZ</button></div><p class="tool-description">Export the current vertices as a standalone LaTeX document. The LLS labels and grid follow your display options.</p><p id="tikz-status" class="muted" aria-live="polite">Generate code when the line is ready.</p>
+      <div id="tikz-result" hidden><label for="tikz-output" class="sr-only">Generated TikZ code</label><textarea id="tikz-output" rows="9" readonly spellcheck="false"></textarea><div class="tool-actions"><button id="copy-tikz" type="button" class="small-button">Copy code</button><button id="download-tikz" type="button" class="small-button">Download .tex</button></div></div>
+    </section>
+  </div>
+  <section id="manual-copy" class="tool-panel manual-copy" aria-labelledby="manual-copy-heading" hidden><div class="section-heading"><h2 id="manual-copy-heading">Copy text</h2><button id="close-manual-copy" type="button" class="small-button">Close</button></div><p class="tool-description" role="status">Your browser requires manual copying here. The text is selected below; press Ctrl+C or ⌘C, or use your device’s Copy command.</p><label for="manual-copy-text" class="sr-only">Text to copy manually</label><textarea id="manual-copy-text" rows="6" readonly spellcheck="false"></textarea></section>
+  <footer>A sequence of 2m + 1 terms specifies m + 1 edges and m + 2 vertices. Moving or adding vertices computes their signed LLS without changing their coordinates.</footer>
+</main>
+<!-- All application scripts are embedded below the DOM, in source order. -->
+<script data-source="signed_lls.js">
+"use strict";
+
+/**
+ * Reconstruct a broken line from a signed LLS sequence.
+ *
+ * Origin: O = (0, 0).
+ * Initial vertices: A0 = (1, 0), A1 = (1, a[0]).
+ *
+ * For a = [a0, ..., a_(2m)], returns m + 2 vertices:
+ * [A0, A1, ..., A_(m+1)]. There are m + 1 edges.
+ * All coefficients must be finite JavaScript numbers. Even-indexed edge
+ * terms must be nonzero. A zero odd-indexed angle term gives three
+ * consecutive collinear vertices and is permitted for editable polylines.
+ *
+ * Recurrence, starting with d0 = (0, 1):
+ *   d_k     = d_(k-1) + a_(2k-1) * A_k
+ *   A_(k+1) = A_k + a_(2k) * d_k
+ *
+ * Uses ordinary Number arithmetic. Large integer calculations can lose
+ * exactness; noninteger coefficients are subject to floating-point rounding.
+ * Input is not modified. Each returned vertex is a separate [x, y] array.
+ *
+ * @param {number[]} a Nonempty signed LLS sequence of odd length.
+ * @returns {number[][]} Vertices in traversal order, including both endpoints.
+ *
+ * @example
+ * signedLLSToVertices([1, 2, -1, 2, 1, -1, 3, -1, 3]);
+ * // [[1, 0], [1, 1], [-1, -2], [-1, -3], [2, 3], [-1, 0]]
+ */
+function signedLLSToVertices(a) {
+  if (!Array.isArray(a) || a.length === 0 || a.length % 2 === 0) {
+    throw new TypeError("The LLS sequence must be a nonempty array of odd length.");
+  }
+  for (let i = 0; i < a.length; i++) {
+    if (!Number.isFinite(a[i])) {
+      throw new TypeError("Every LLS coefficient must be a finite number.");
+    }
+    if (i % 2 === 0 && a[i] === 0) {
+      throw new TypeError(`Edge term a${i} must be nonzero.`);
+    }
+  }
+
+  let x = 1, y = a[0];           // Current vertex A1.
+  let dx = 0, dy = 1;           // Initial direction d0.
+  const vertices = [[1, 0], [x, y]];
+
+  for (let i = 1; i < a.length; i += 2) {
+    // Use the odd-indexed term to update the direction at the current vertex.
+    dx += a[i] * x;
+    dy += a[i] * y;
+
+    // Use the following even-indexed term to construct the next vertex.
+    x += a[i + 1] * dx;
+    y += a[i + 1] * dy;
+
+    if (![x, y, dx, dy].every(Number.isFinite)) {
+      throw new RangeError("The construction overflowed JavaScript Number arithmetic.");
+    }
+    vertices.push([x, y]);
+  }
+
+  return vertices;
+}
+
+// Browser: load this file with a normal script tag, then call the function.
+// Node.js (CommonJS): const { signedLLSToVertices } = require("./signed_lls.js");
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { signedLLSToVertices };
+}
+
+</script>
+<script data-source="lls_math.js">
+"use strict";
+
+/**
+ * Signed LLS mathematics, with O fixed at (0, 0).
+ * Source conventions: Karpenkov, Geometry of Continued Fractions,
+ * Definition 15.7 (p. 182) and the finite cases of Definition 5.15 (p. 65).
+ *
+ * Definition 5.15 is a theorem-backed duality for positive integers.
+ * Applying its endpoint formulas to other real coefficients is a formal
+ * extension; the result can contain zero edges or fail to be involutive.
+ */
+var LLSMath = (() => {
+  const cleanZero = value => Object.is(value, -0) ? 0 : value;
+
+  function determinant(u, v) {
+    if ([u[0], u[1], v[0], v[1]].every(Number.isSafeInteger)) {
+      return Number(BigInt(u[0]) * BigInt(v[1]) - BigInt(u[1]) * BigInt(v[0]));
+    }
+    return cleanZero(u[0] * v[1] - u[1] * v[0]);
+  }
+
+  function angleNumerator(previous, current, next) {
+    if ([...previous, ...current, ...next].every(Number.isSafeInteger)) {
+      // Subtract after conversion: differences of two safe coordinates can
+      // themselves exceed the safe-integer range, even when the final
+      // determinant is a small exact integer.
+      const ux = BigInt(previous[0]) - BigInt(current[0]);
+      const uy = BigInt(previous[1]) - BigInt(current[1]);
+      const vx = BigInt(next[0]) - BigInt(current[0]);
+      const vy = BigInt(next[1]) - BigInt(current[1]);
+      return Number(ux * vy - uy * vx);
+    }
+    return determinant(
+      [previous[0] - current[0], previous[1] - current[1]],
+      [next[0] - current[0], next[1] - current[1]]
+    );
+  }
+
+  function issue(kind, message, details = {}) {
+    return { kind, message, ...details };
+  }
+
+  // Avoid overflowing or underflowing the product of two otherwise usable
+  // edge determinants when the final angle coefficient is representable.
+  function divideByProduct(numerator, a, b) {
+    const product = a * b;
+    if (Number.isFinite(product) && product !== 0) return numerator / product;
+    return Math.abs(a) >= Math.abs(b)
+      ? (numerator / a) / b
+      : (numerator / b) / a;
+  }
+
+  /**
+   * Analyze an ordered list of [x, y] vertices without modifying it.
+   * Returns {sequence, edges, issues, valid, nondegenerate}.
+   *
+   * valid means every edge determinant is nonzero and all LLS coefficients
+   * can be computed as finite Numbers. A straight interior vertex gives an
+   * angle term of 0: valid=true, nondegenerate=false. Undefined coefficients
+   * are null. Invalid editable geometry is reported, never silently removed.
+   */
+  function analyzeVertices(points) {
+    const issues = [];
+    if (!Array.isArray(points) || points.length < 2) {
+      return {
+        sequence: [], edges: [], valid: false, nondegenerate: false,
+        issues: [issue("insufficient-vertices", "Add at least two vertices to compute an LLS sequence.")]
+      };
+    }
+
+    const edgeCount = points.length - 1;
+    const sequence = Array(2 * edgeCount - 1).fill(null);
+    const edges = Array(edgeCount).fill(null);
+    for (let k = 0; k < points.length; k++) {
+      const p = points[k];
+      if (!Array.isArray(p) || p.length !== 2 || !Number.isFinite(p[0]) || !Number.isFinite(p[1])) {
+        issues.push(issue("invalid-coordinate", `Vertex A${k} needs two finite coordinates.`, {
+          index: k, vertexIndex: k
+        }));
+      }
+    }
+    if (issues.length) return {sequence, edges, issues, valid: false, nondegenerate: false};
+
+    let valid = true;
+    let nondegenerate = true;
+    for (let k = 0; k < edgeCount; k++) {
+      const p = points[k], q = points[k + 1];
+      const d = determinant(p, q);
+      const details = {index: k, edgeIndex: k, coefficientIndex: 2 * k};
+      if (!Number.isFinite(d)) {
+        valid = false;
+        issues.push(issue("numeric-overflow", `Edge A${k} → A${k + 1} exceeds the numerical range for its determinant.`, details));
+        continue;
+      }
+      edges[k] = sequence[2 * k] = d;
+      if (d === 0) {
+        valid = false;
+        if (p[0] === q[0] && p[1] === q[1]) {
+          issues.push(issue("duplicate-vertices", `A${k} and A${k + 1} coincide. Move a vertex or remove the repeated point.`, details));
+        } else {
+          issues.push(issue("origin-edge", `The supporting line of A${k} → A${k + 1} passes through O. Its edge term a${2 * k} is 0, so this is not a valid LLS edge.`, details));
+        }
+      }
+    }
+
+    for (let k = 1; k < points.length - 1; k++) {
+      const before = edges[k - 1], after = edges[k];
+      if (before === null || after === null || before === 0 || after === 0) continue;
+      const numerator = angleNumerator(points[k - 1], points[k], points[k + 1]);
+      const value = cleanZero(divideByProduct(numerator, before, after));
+      const details = {index: k, vertexIndex: k, coefficientIndex: 2 * k - 1};
+      if (!Number.isFinite(numerator) || !Number.isFinite(value)) {
+        valid = false;
+        issues.push(issue("numeric-overflow", `The signed angle term at A${k} exceeds the numerical range.`, details));
+        continue;
+      }
+      sequence[2 * k - 1] = value;
+      if (value === 0) {
+        nondegenerate = false;
+        issues.push(issue("collinear", `A${k - 1}, A${k}, and A${k + 1} are collinear; the signed angle term a${2 * k - 1} is 0.`, details));
+      }
+    }
+
+    return {sequence, edges, issues, valid, nondegenerate: valid && nondegenerate};
+  }
+
+  function assertFiniteOddSequence(a) {
+    if (!Array.isArray(a) || a.length === 0 || a.length % 2 === 0) {
+      throw new TypeError("The sequence must be a nonempty array of odd length.");
+    }
+    for (let i = 0; i < a.length; i++) {
+      if (!Number.isFinite(a[i])) throw new TypeError(`Coefficient a${i} must be a finite number.`);
+      if (i % 2 === 0 && a[i] === 0) {
+        throw new RangeError(`Edge coefficient a${i} must be nonzero before computing its adjacency dual.`);
+      }
+    }
+  }
+
+  // The endpoint rules themselves are algebraically meaningful even if their
+  // output has a zero edge, so this internal operation also supports that
+  // output when checking the formal double dual.
+  function formalDual(a) {
+    if (a.length === 1) {
+      return a[0] === 1 || a[0] === 2 ? [a[0]] : [1, a[0] - 2, 1];
+    }
+    const result = a.slice(1, -1).reverse();
+    const first = a[0], last = a[a.length - 1];
+    if (last === 1) result[0] += 1;
+    else result.unshift(1, last - 1);
+    if (first === 1) result[result.length - 1] += 1;
+    else result.push(first - 1, 1);
+    return result.map(cleanZero);
+  }
+
+  function approximatelySame(a, b) {
+    return a.length === b.length && a.every((value, i) => {
+      const other = b[i];
+      return value === other || Math.abs(value - other) <= 32 * Number.EPSILON * Math.max(Math.abs(value), Math.abs(other));
+    });
+  }
+
+  /**
+   * Finite adjacency dual from Definition 5.15, with a formal real extension.
+   * Endpoint comparisons to 1 are exact, as required by the piecewise rules.
+   *
+   * Input: odd finite array, nonzero even-indexed (edge) coefficients. Zero
+   * odd-indexed coefficients are accepted as straight-vertex formal terms.
+   * Output: {sequence, domain, warnings, canDraw, nondegenerate, isInvolutive}.
+   * isInvolutive checks the algebraic double dual to floating-point tolerance;
+   * it does not assert that a degenerate intermediate result is drawable.
+   */
+  function adjacencyDual(a) {
+    assertFiniteOddSequence(a);
+    const sequence = formalDual(a);
+    if (sequence.some(value => !Number.isFinite(value))) {
+      throw new RangeError("The dual sequence exceeds JavaScript Number arithmetic.");
+    }
+    const domain = a.every(value => Number.isInteger(value) && value > 0)
+      ? "positive-integer" : "formal-real";
+    const warnings = [];
+    const zeroEdges = sequence.map((value, i) => value === 0 && i % 2 === 0 ? i : -1).filter(i => i >= 0);
+    const zeroAngles = sequence.map((value, i) => value === 0 && i % 2 === 1 ? i : -1).filter(i => i >= 0);
+    const canDraw = zeroEdges.length === 0;
+    const isInvolutive = approximatelySame(formalDual(sequence), a);
+
+    if (domain === "formal-real") {
+      warnings.push("Definition 5.15 is stated for positive integers. Here its finite endpoint formulas are applied formally to real or signed coefficients.");
+    }
+    if (!canDraw) {
+      warnings.push(`The formal dual has zero edge ${zeroEdges.length === 1 ? "term" : "terms"} ${zeroEdges.map(i => "a" + i).join(", ")}; it cannot define a broken line with this LLS sequence.`);
+    }
+    if (zeroAngles.length) {
+      warnings.push(`The dual has zero angle ${zeroAngles.length === 1 ? "term" : "terms"} ${zeroAngles.map(i => "a" + i).join(", ")}, corresponding to collinear consecutive vertices.`);
+    }
+    if (!isInvolutive) {
+      warnings.push("For this input, applying the formal endpoint rules twice does not recover the original sequence; the signed real extension is not a duality on all inputs.");
+    }
+    return {sequence, domain, warnings, canDraw, nondegenerate: canDraw && zeroAngles.length === 0, isInvolutive};
+  }
+
+  function formatNumber(value, precision = 12) {
+    if (value === null || !Number.isFinite(value)) return "undefined";
+    if (value === 0) return "0";
+    return Number.isSafeInteger(value) ? String(value) : Number(value.toPrecision(precision)).toString();
+  }
+
+  return Object.freeze({determinant, analyzeVertices, adjacencyDual, formatNumber});
+})();
+
+if (typeof module !== "undefined" && module.exports) module.exports = LLSMath;
+
+</script>
+<script data-source="point_input.js">
+"use strict";
+
+/** Parse finite numeric values and complete ordered lists of vertex pairs. */
+var LLSPointInput = (() => {
+  function parseNumber(text) {
+    const s = String(text).trim().replace(/−/g, "-").replace(/\s*\/\s*/g, "/");
+    const numeric = "[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:e[+-]?\\d+)?";
+    if (!new RegExp("^" + numeric + "(?:/" + numeric + ")?$", "i").test(s)) {
+      throw new Error("Use a finite number or a fraction such as 1/2.");
+    }
+    const parts = s.split("/").map(Number);
+    if (!parts.every(Number.isFinite)) {
+      throw new Error("The numerator and denominator must both be finite.");
+    }
+    const n = parts[0] / (parts.length === 2 ? parts[1] : 1);
+    if (!Number.isFinite(n)) {
+      throw new Error("Use finite values; a fraction cannot have denominator zero.");
+    }
+    return n === 0 ? 0 : n;
+  }
+
+  function parsePair(body, index) {
+    const value = body.trim().replace(/\s*\/\s*/g, "/");
+    const parts = value.includes(",") ? value.split(",").map(s => s.trim()) : value.split(/\s+/);
+    if (parts.length !== 2 || parts.some(s => !s)) {
+      throw new Error(`Pair ${index} must contain exactly two coordinates, x and y.`);
+    }
+    return parts.map((part, axis) => {
+      try { return parseNumber(part); }
+      catch (error) { throw new Error(`Pair ${index}, ${axis === 0 ? "x" : "y"}: ${error.message}`); }
+    });
+  }
+
+  function parseGrouped(text) {
+    const points = [];
+    let pos = 0;
+    const skipSpace = () => { while (pos < text.length && /\s/.test(text[pos])) pos++; };
+    const afterFirst = text.slice(1).trimStart()[0];
+    const wrapped = text[0] === "[" && (afterFirst === "[" || afterFirst === "(");
+    if (wrapped) { pos++; skipSpace(); }
+
+    while (pos < text.length) {
+      const open = text[pos], close = open === "[" ? "]" : ")";
+      if (open !== "[" && open !== "(") {
+        throw new Error(`Expected coordinate pair ${points.length + 1} in brackets or parentheses.`);
+      }
+      const start = ++pos;
+      while (pos < text.length && !/[()[\]]/.test(text[pos])) pos++;
+      if (text[pos] !== close) {
+        throw new Error(`Pair ${points.length + 1} has a missing or mismatched closing bracket.`);
+      }
+      points.push(parsePair(text.slice(start, pos), points.length + 1));
+      pos++;
+      const beforeSpace = pos;
+      skipSpace();
+      const hadSpace = pos > beforeSpace;
+
+      if (wrapped && text[pos] === "]") {
+        pos++;
+        skipSpace();
+        if (pos !== text.length) throw new Error("Unexpected text after the coordinate list.");
+        return points;
+      }
+      if (pos === text.length) {
+        if (wrapped) throw new Error("The coordinate list is missing its closing square bracket.");
+        return points;
+      }
+      if (text[pos] === "," || text[pos] === ";") {
+        pos++;
+        skipSpace();
+        if (pos === text.length || (wrapped && text[pos] === "]")) {
+          throw new Error("Expected another coordinate pair after the separator.");
+        }
+      } else if (!hadSpace || (text[pos] !== "[" && text[pos] !== "(")) {
+        throw new Error("Separate coordinate pairs with a comma, semicolon, or whitespace.");
+      }
+    }
+    return points;
+  }
+
+  /**
+   * Accept [[x,y], ...], [(x,y), ...], bare bracketed pairs, or one x,y / x y
+   * pair per line or semicolon. Values may be decimal, scientific, or p/q.
+   * Every character is validated. Geometry validity is left to the editor.
+   */
+  function parsePoints(text) {
+    const source = String(text).trim();
+    if (!source) throw new Error("Enter at least two coordinate pairs, for example [(1, 0), (1, 1)].");
+    const points = source[0] === "[" || source[0] === "("
+      ? parseGrouped(source)
+      : source.split(/\r\n?|\n|;/).map(row => row.trim()).filter(Boolean)
+        .map((row, index) => parsePair(row, index + 1));
+    if (points.length < 2) throw new Error("Enter at least two coordinate pairs to draw a broken line.");
+    return points;
+  }
+
+  return Object.freeze({parseNumber, parsePoints});
+})();
+
+if (typeof module !== "undefined" && module.exports) module.exports = LLSPointInput;
+
+</script>
+<script data-source="tikz.js">
+(function (root, factory) {
+  "use strict";
+  const api = factory();
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+  if (root) root.LLSTikZ = api;
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  "use strict";
+
+  // Plain decimal literals avoid PGF's inconsistent handling of exponent syntax.
+  function decimal(value) {
+    if (!Number.isFinite(value)) throw new TypeError("TikZ coordinates must be finite numbers.");
+    if (value === 0) return "0";
+    const text = String(value);
+    if (!/[eE]/.test(text)) return text;
+    const negative = text[0] === "-";
+    const [mantissa, exponent] = (negative ? text.slice(1) : text).split(/e/i);
+    const digits = mantissa.replace(".", "");
+    const before = mantissa.includes(".") ? mantissa.indexOf(".") : mantissa.length;
+    const place = before + Number(exponent);
+    let result;
+    if (place <= 0) result = "0." + "0".repeat(-place) + digits;
+    else if (place >= digits.length) result = digits + "0".repeat(place - digits.length);
+    else result = digits.slice(0, place) + "." + digits.slice(place);
+    return (negative ? "-" : "") + result;
+  }
+
+  function mathNumber(value) {
+    const text = Number(value.toPrecision(10)).toString();
+    if (!/e/i.test(text)) return text === "-0" ? "0" : text;
+    const [mantissa, exponent] = text.split(/e/i);
+    return mantissa + "\\times 10^{" + Number(exponent) + "}";
+  }
+
+  function gridStep(span) {
+    const target = Math.max(1, span / 18);
+    const power = 10 ** Math.floor(Math.log10(target));
+    const fraction = target / power;
+    return (fraction <= 1 ? 1 : fraction <= 2 ? 2 : fraction <= 5 ? 5 : 10) * power;
+  }
+
+  /**
+   * Return a complete standalone LaTeX document for a directed broken line.
+   * points: at least two finite [x, y] pairs, in traversal order.
+   * sequence: optional 2*points.length-3 LLS entries; null entries are unlabeled.
+   * options.showLabels: show finite LLS labels (default true), and supply the
+   *   legacy default for vertex names when showPointLabels is omitted.
+   * options.showPointLabels: show vertex names independently of LLS labels.
+   * options.showEvenPointLabels: include even-indexed vertex names (default true).
+   * options.showGrid: show a bounded coordinate grid (default true).
+   * O always stays at (0,0), and horizontal/vertical plotting units are equal.
+   */
+  function toTikz(points, sequence = null, options = {}) {
+    if (!Array.isArray(points) || points.length < 2) {
+      throw new TypeError("TikZ export needs at least two vertices.");
+    }
+    points.forEach((point, index) => {
+      if (!Array.isArray(point) || point.length !== 2 || !point.every(Number.isFinite)) {
+        throw new TypeError("Vertex A" + index + " must contain two finite numbers.");
+      }
+    });
+    if (sequence !== null) {
+      if (!Array.isArray(sequence) || sequence.length !== 2 * points.length - 3) {
+        throw new TypeError("The LLS sequence length does not match the vertices.");
+      }
+      for (const value of sequence) {
+        if (value !== null && !Number.isFinite(value)) {
+          throw new TypeError("LLS labels must be finite numbers or null.");
+        }
+      }
+    }
+    if (options === null || typeof options !== "object") {
+      throw new TypeError("TikZ options must be an object.");
+    }
+    const showLabels = options.showLabels !== false;
+    const showPointLabels = options.showPointLabels === undefined
+      ? showLabels : options.showPointLabels !== false;
+    const showEvenPointLabels = options.showEvenPointLabels !== false;
+    const showGrid = options.showGrid !== false;
+    let magnitude = 0;
+    for (const point of points) for (const value of point) magnitude = Math.max(magnitude, Math.abs(value));
+    // Keep ordinary coordinates intact. Normalize only outside a useful TeX range.
+    const normalized = magnitude > 10000 || (magnitude > 0 && magnitude < 0.01);
+    const divisor = normalized ? magnitude : 1;
+    const plotPoints = points.map(point => point.map(value => value / divisor));
+    let xmin = 0, xmax = 0, ymin = 0, ymax = 0;
+    for (const [x, y] of plotPoints) {
+      xmin = Math.min(xmin, x); xmax = Math.max(xmax, x);
+      ymin = Math.min(ymin, y); ymax = Math.max(ymax, y);
+    }
+    const extent = Math.max(xmax - xmin, ymax - ymin, normalized ? 0.1 : 1);
+    const margin = extent * 0.15;
+    xmin -= margin; xmax += margin; ymin -= margin; ymax += margin;
+    const unit = 8 / (extent + 2 * margin);
+    const bounds = [xmin, ymin, xmax, ymax].map(decimal);
+    const lines = [
+      "% Generated by Signed LLS Explorer.",
+      "% Vertices are in traversal order; O = (0,0).",
+      "% Numeric coordinate literals preserve the supplied JavaScript Number values."
+    ];
+    if (sequence !== null) lines.push("% Signed LLS: [" + sequence.map(n => n === null ? "undefined" : decimal(n)).join(", ") + "]");
+    points.forEach((point, i) => lines.push("% Original A" + i + " = (" + point.map(decimal).join(", ") + ")"));
+    if (normalized) {
+      lines.push("% Extreme coordinate range: plotted coordinates are original coordinates divided by " + decimal(divisor) + ".");
+      lines.push("% This uniform normalization preserves the shape, origin, and direction of the broken line.");
+    }
+    lines.push(
+      "\\documentclass[tikz,border=5pt]{standalone}",
+      "\\usepackage{tikz}",
+      "\\usetikzlibrary{arrows.meta,decorations.markings}",
+      "\\definecolor{LLSblue}{HTML}{216F98}",
+      "\\definecolor{LLSamber}{HTML}{AD641F}",
+      "\\definecolor{LLSink}{HTML}{1C3343}",
+      "\\begin{document}",
+      "\\begin{tikzpicture}[x=" + decimal(unit) + "cm,y=" + decimal(unit) + "cm,",
+      "  vertex/.style={fill=LLSink,draw=white,line width=0.4pt},",
+      "  edge/.style={draw=LLSblue,line width=0.9pt,line cap=round},",
+      "  directed/.style={postaction={decorate},decoration={markings,mark=at position 0.58 with {\\arrow{Stealth}}}},",
+      "  term/.style={font=\\scriptsize,fill=white,inner sep=1.4pt},",
+      "  point label/.style={font=\\small,text=LLSink,inner sep=2pt}]"
+    );
+    if (showGrid) {
+      // At most a few dozen grid lines; huge lattice ranges never expand into loops.
+      const step = normalized ? 0.2 : gridStep(extent);
+      if (normalized) lines.push("  % Grid is in the uniformly normalized coordinate units.");
+      lines.push("  \\draw[step=" + decimal(step) + ",very thin,gray!18] (" + bounds[0] + "," + bounds[1] + ") grid (" + bounds[2] + "," + bounds[3] + ");");
+    }
+    lines.push(
+      "  \\draw[-{Stealth[length=3pt]},gray!55,thin] (" + bounds[0] + ",0) -- (" + bounds[2] + ",0) node[right,font=\\small] {$x$};",
+      "  \\draw[-{Stealth[length=3pt]},gray!55,thin] (0," + bounds[1] + ") -- (0," + bounds[3] + ") node[above,font=\\small] {$y$};",
+      "  \\coordinate (O) at (0,0);"
+    );
+    plotPoints.forEach((point, i) => lines.push("  \\coordinate (A" + i + ") at (" + point.map(decimal).join(",") + ");"));
+    for (let i = 0; i < plotPoints.length - 1; i++) {
+      const p = plotPoints[i], q = plotPoints[i + 1];
+      const nonzero = p[0] !== q[0] || p[1] !== q[1];
+      lines.push("  \\draw[edge" + (nonzero ? ",directed" : "") + "] (A" + i + ") -- (A" + (i + 1) + ");");
+      if (showLabels && sequence !== null && sequence[2 * i] !== null) {
+        const dx = q[0] - p[0], dy = q[1] - p[1], length = Math.hypot(dx, dy) || 1;
+        const offset = 0.32 / unit;
+        const x = p[0] / 2 + q[0] / 2 - dy / length * offset;
+        const y = p[1] / 2 + q[1] / 2 + dx / length * offset;
+        lines.push("  \\node[term,text=LLSblue] at (" + decimal(x) + "," + decimal(y) + ") {$a_{" + (2 * i) + "}=" + mathNumber(sequence[2 * i]) + "$};");
+      }
+    }
+    lines.push("  \\fill[LLSink] (O) circle[radius=1.4pt] node[above left,point label] {$O$};");
+    plotPoints.forEach((point, i) => {
+      const anchor = i % 2 ? "above right" : "below right";
+      const showName = showPointLabels && (showEvenPointLabels || i % 2 === 1);
+      lines.push("  \\filldraw[vertex] (A" + i + ") circle[radius=2pt]" + (showName ? " node[" + anchor + ",point label] {$A_{" + i + "}$}" : "") + ";");
+      if (showLabels && sequence !== null && i > 0 && i < plotPoints.length - 1 && sequence[2 * i - 1] !== null) {
+        lines.push("  \\node[term,text=LLSamber,anchor=north west,xshift=6pt,yshift=-6pt] at (A" + i + ") {$a_{" + (2 * i - 1) + "}=" + mathNumber(sequence[2 * i - 1]) + "$};");
+      }
+    });
+    lines.push("\\end{tikzpicture}", "\\end{document}", "");
+    return lines.join("\n");
+  }
+
+  return { toTikz };
+});
+
+</script>
+<script data-source="app.js">
+"use strict";
+
+const EXAMPLE="[1;2,-1,2,1,-1,3,-1,3]", BLUE="#216f98", AMBER="#ad641f", INK="#1c3343";
+const NS="http://www.w3.org/2000/svg", W=760, H=620, $=id=>document.getElementById(id);
+const subscript=n=>String(n).replace(/\d/g,d=>"₀₁₂₃₄₅₆₇₈₉"[Number(d)]), pointName=i=>"A"+subscript(i);
+const copyPoints=points=>points.map(p=>[p[0],p[1]]), defaultView=()=>({cx:0,cy:0,scale:66});
+let state={points:[],analysis:null,source:"canonical",canonicalSequence:null,view:defaultView()}, history=[], drag=null, mode="move", draft=false, pointListDraft=false, dual=null, combination=null, tikz="";
+
+function fmt(n){if(!Number.isFinite(n))return "undefined";if(n===0)return "0";return Number.isSafeInteger(n)?String(n):Number(n.toPrecision(10)).toString();}
+function exact(n){return Object.is(n,-0)?"0":String(n);}
+function sequenceText(a){return "["+a.map(exact).join(", ").replace(", ","; ")+"]";}
+function parseNumber(text){return LLSPointInput.parseNumber(text);}
+function parseSequence(text){
+  let s=text.trim().replace(/−/g,"-").replace(/\s*\/\s*/g,"/");
+  if(s.startsWith("[")&&s.endsWith("]"))s=s.slice(1,-1).trim();
+  if(!s)throw new Error("Enter an odd-length sequence, for example [1;2,-1,2,1,-1,3,-1,3].");
+  let a;try{a=s.split(/[\s,;:]+/).map(parseNumber);}catch{throw new Error("Use numbers or fractions separated by commas, semicolons, colons, or spaces, with optional square brackets.");}
+  if(a.length%2===0)throw new Error("Use an odd number of terms: an edge term, then alternating angle and edge terms.");
+  if(a.some((n,i)=>i%2===0&&n===0))throw new Error("Edge terms a₀, a₂, … must be nonzero. A zero angle term is allowed.");
+  return a;
+}
+function el(tag,attrs={},text){const n=document.createElementNS(NS,tag);for(const[k,v]of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;}
+function svgText(x,y,text,attrs={}){return el("text",{x,y,...attrs},text);}
+function niceStep(value){const e=Math.floor(Math.log10(value)),p=10**e,f=value/p;return(f<=1?1:f<=2?2:f<=5?5:10)*p;}
+function X(x){return W/2+(x-state.view.cx)*state.view.scale;}
+function Y(y){return H/2-(y-state.view.cy)*state.view.scale;}
+function snapshot(){return {points:copyPoints(state.points),source:state.source,canonicalSequence:state.canonicalSequence?[...state.canonicalSequence]:null,view:{...state.view},mode};}
+function saveUndo(value=snapshot()){history.push(value);if(history.length>60)history.shift();$("undo").disabled=false;}
+function fitView(){
+  if(!state.points.length){state.view=defaultView();return;}
+  const xs=[0,...state.points.map(p=>p[0])],ys=[0,...state.points.map(p=>p[1])];
+  const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys),spanX=maxX-minX,spanY=maxY-minY,extent=Math.max(spanX,spanY,1);
+  if(!Number.isFinite(extent)){state.view=defaultView();return;}
+  const margin=extent*.17,scale=Math.min((W-130)/(spanX+2*margin),(H-130)/(spanY+2*margin));
+  if(Number.isFinite(scale)&&scale>0)state.view={cx:minX/2+maxX/2,cy:minY/2+maxY/2,scale};
+}
+function clearSequenceError(){$("error-message").hidden=true;$("sequence").removeAttribute("aria-invalid");draft=false;}
+function clearCoordinateError(){$("coordinate-error").hidden=true;}
+function clearPointListError(){$("point-list-error").hidden=true;$("point-list").removeAttribute("aria-invalid");}
+function renderPointList(){
+  if(pointListDraft){$("point-list-status").textContent="Coordinate list draft — choose Draw from coordinates to apply it.";return;}
+  $("point-list").value=state.points.length?"["+state.points.map(p=>"["+p.map(exact).join(", ")+"]").join(", ")+"]":"";
+  clearPointListError();
+  $("point-list-status").textContent=state.points.length?`${state.points.length} ${state.points.length===1?"vertex":"vertices"} from the current line. Edit this list, then choose Draw from coordinates.`:"No vertices yet. Enter at least two coordinate pairs.";
+}
+function invalidateTikz(reason="The line changed. Generate TikZ again."){const had=!!tikz;tikz="";$("tikz-output").value="";$("tikz-result").hidden=true;$("tikz-status").textContent=had?reason:"Generate code when the line is ready.";}
+function invalidateCombination(){const had=!!combination;combination=null;$("combination-output").value="";$("combination-result").hidden=true;$("combination-warnings").replaceChildren();$("combination-warnings").hidden=true;$("combination-status").textContent=had?"The line changed. Choose a concatenation to draw it again.":"Both actions use the current plotted LLS. Undo restores the previous line.";}
+function invalidateOutputs(){const had=!!dual;dual=null;$("dual-output").value="";$("dual-result").hidden=true;$("dual-status").textContent=had?"The line changed. Compute its dual again.":"Compute the dual of the current sequence.";invalidateCombination();invalidateTikz();}
+function analyze(){state.analysis=LLSMath.analyzeVertices(state.points);}
+function currentSequence(){return state.source==="canonical"&&state.canonicalSequence?state.canonicalSequence:state.analysis&&state.analysis.sequence||[];}
+function validSequence(){const a=currentSequence();return state.points.length>=2&&a.length>0&&a.every((n,i)=>Number.isFinite(n)&&(i%2!==0||n!==0))&&state.analysis&&state.analysis.valid;}
+function syncSequenceInput(){clearSequenceError();if(validSequence()){$("sequence").value=sequenceText(currentSequence());$("sequence").placeholder="Signed LLS sequence";}else{$("sequence").value="";$("sequence").placeholder=state.points.length<2?"Add at least two vertices":"LLS undefined for this geometry";}}
+function setPoints(points,{source="edited",canonicalSequence=null,fit=false,undo=true}={}){if(undo)saveUndo();state.points=copyPoints(points);state.source=source;state.canonicalSequence=canonicalSequence?[...canonicalSequence]:null;if(fit)fitView();invalidateOutputs();clearCoordinateError();analyze();syncSequenceInput();render();}
+function showSequenceError(error){draft=true;$("error-message").textContent=error.message+" The plotted vertices have not changed.";$("error-message").hidden=false;$("sequence").setAttribute("aria-invalid","true");renderStatus();}
+function canonicalPoints(a){
+  const points=signedLLSToVertices(a),analysis=LLSMath.analyzeVertices(points);
+  if(!analysis.valid||a.some((value,i)=>value!==0&&analysis.sequence[i]===0))throw new RangeError("These coefficients lose too much numerical precision to draw accurately. Try smaller or less extreme coefficients.");
+  return points;
+}
+function drawFromInput({undo=true}={}){try{const a=parseSequence($("sequence").value);setPoints(canonicalPoints(a),{source:"canonical",canonicalSequence:a,fit:true,undo});}catch(error){showSequenceError(error);}}
+function drawFromPointList(){
+  try{const points=LLSPointInput.parsePoints($("point-list").value);pointListDraft=false;setPoints(points,{source:"edited",fit:true});}
+  catch(error){pointListDraft=true;$("point-list-error").textContent=error.message+" This coordinate list was not applied.";$("point-list-error").hidden=false;$("point-list").setAttribute("aria-invalid","true");renderPointList();}
+}
+function renderStatus(){
+  $("source-status").textContent=draft?"Input draft — choose Draw from LLS to replace the current line.":state.points.length<2?"Add at least two vertices to compute a signed LLS.":!validSequence()?"Current coordinates preserved · some LLS terms are undefined.":state.source==="canonical"?"Canonical construction · A₀ = (1, 0), A₁ = (1, a₀)":"Edited coordinates · signed LLS recomputed from the current vertices";
+}
+function renderSummary(){
+  const a=currentSequence();$("counts").replaceChildren();
+  [[a.length,"terms"],[Math.max(0,state.points.length-1),"edges"],[state.points.length,"vertices"]].forEach(([n,label])=>{const span=document.createElement("span"),strong=document.createElement("strong");strong.textContent=n;span.append(strong," "+label);$("counts").append(span);});
+  renderStatus();$("sequence-terms").replaceChildren();
+  a.forEach((n,i)=>{const d=document.createElement("div");d.className="term"+(i%2?" angle":"")+(Number.isFinite(n)?"":" undefined");d.title=i%2?"Signed angle term at "+pointName((i+1)/2):"Signed edge term "+pointName(i/2)+" → "+pointName(i/2+1);const small=document.createElement("small"),strong=document.createElement("strong");small.textContent="a"+subscript(i);strong.textContent=fmt(n);d.append(small,strong);$("sequence-terms").append(d);});
+  const diagnostics=$("geometry-diagnostics");diagnostics.replaceChildren();
+  const messages=[...new Set((state.analysis&&state.analysis.issues||[]).map(x=>x.message).filter(Boolean))];
+  if(state.points.length>=3&&state.analysis.valid&&!state.analysis.nondegenerate&&!messages.length)messages.push("A straight angle gives a zero odd-indexed term. The coordinates and finite LLS are retained.");
+  messages.forEach(message=>{const p=document.createElement("p");p.textContent=message;diagnostics.append(p);});diagnostics.hidden=!messages.length;
+  const note=passageText(state.points);$("passage-note").textContent=note;$("passage-note").hidden=!note;
+  $("precision-note").hidden=!state.points.some(p=>p.some(n=>Number.isInteger(n)&&!Number.isSafeInteger(n)));$("precision-note").textContent="Some coordinates exceed JavaScript’s safe integer range and may be approximate.";
+  $("compute-dual").disabled=!validSequence();$("draw-combination").disabled=!validSequence();$("draw-reversed-combination").disabled=!validSequence();$("generate-tikz").disabled=state.points.length<2;$("copy").disabled=!state.points.length;$("undo").disabled=!history.length;
+}
+function coordinateError(message){$("coordinate-error").textContent=message;$("coordinate-error").hidden=false;}
+function renderTable(){
+  $("vertices").replaceChildren();$("no-vertices").hidden=state.points.length>0;
+  state.points.forEach((p,i)=>{
+    const row=document.createElement("tr"),name=document.createElement("td");name.textContent=pointName(i);row.append(name);
+    const inputs=p.map((n,axis)=>{const td=document.createElement("td"),input=document.createElement("input");input.type="text";input.inputMode="decimal";input.className="coordinate-input";input.value=exact(n);input.autocomplete="off";input.setAttribute("aria-label",pointName(i)+" "+(axis===0?"x":"y")+" coordinate");input.dataset.vertex=i;input.dataset.axis=axis;td.append(input);row.append(td);return input;});
+    function commit(axis,restoreFocus){
+      try{const next=inputs.map(input=>parseNumber(input.value));if(next[0]===state.points[i][0]&&next[1]===state.points[i][1]){clearCoordinateError();return;}const points=copyPoints(state.points);points[i]=next;setPoints(points,{fit:true});if(restoreFocus){const input=$("vertices").querySelector(`[data-vertex="${i}"][data-axis="${axis}"]`);if(input){input.focus();if(typeof input.select==="function")input.select();}}}
+      catch(error){coordinateError(pointName(i)+": "+error.message);inputs[axis].setAttribute("aria-invalid","true");}
+    }
+    inputs.forEach((input,axis)=>{input.addEventListener("change",()=>commit(axis,false));input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();commit(axis,true);}});});
+    const cell=document.createElement("td"),remove=document.createElement("button");remove.type="button";remove.className="remove-point";remove.textContent="×";remove.setAttribute("aria-label","Remove "+pointName(i));remove.addEventListener("click",()=>{const points=copyPoints(state.points);points.splice(i,1);setPoints(points);});cell.append(remove);row.append(cell);$("vertices").append(row);
+  });
+}
+function llsTag(group,x,y,text,color){if(!Number.isFinite(x)||!Number.isFinite(y))return;const width=Math.max(49,text.length*7+13),g=el("g",{class:"lls-tag"});g.append(el("rect",{x:x-width/2,y:y-13,width,height:24,rx:5,fill:"white",stroke:color,"stroke-opacity":.17}));g.append(svgText(x,y+4,text,{fill:color,"text-anchor":"middle"}));group.append(g);}
+
+function drawPlot(){
+  const points=state.points,a=currentSequence(),svg=$("plot"),{cx,cy,scale}=state.view;
+  const left=cx-(W/2-24)/scale,right=cx+(W/2-24)/scale,bottom=cy-(H/2-24)/scale,top=cy+(H/2-24)/scale;
+  svg.replaceChildren();svg.classList.toggle("add-mode",mode==="add");
+  svg.append(el("title",{id:"plot-title"},"Editable directed broken line"));
+  svg.append(el("desc",{id:"plot-description"},points.length?`${points.length} vertices in order: ${points.map((p,i)=>pointName(i)+" = ("+p.map(exact).join(", ")+")").join("; ")}. Edit coordinates in the adjacent table or drag points. The origin is fixed.`:"An empty coordinate plane. Choose Add vertices and click the plane, or use the coordinate form."));
+  const defs=el("defs"),arrow=el("marker",{id:"direction-arrow",viewBox:"0 0 10 10",refX:8,refY:5,markerWidth:5,markerHeight:5,orient:"auto-start-reverse"});arrow.append(el("path",{d:"M 0 0 L 10 5 L 0 10 z",fill:BLUE}));defs.append(arrow);
+  const clip=el("clipPath",{id:"plot-clip"});clip.append(el("rect",{x:10,y:10,width:W-20,height:H-20}));defs.append(clip);svg.append(defs);
+  const grid=el("g",{"pointer-events":"none"}),axes=el("g",{"pointer-events":"none"}),lines=el("g",{"pointer-events":"none","clip-path":"url(#plot-clip)"}),labels=el("g",{"pointer-events":"none"}),dots=el("g");
+  const step=niceStep(65/scale);
+  if(Number.isFinite(step)&&step>0){
+    for(let j=0,x=Math.ceil(left/step)*step;x<=right&&j<100;j++,x+=step){if($("lattice").checked)grid.append(el("line",{x1:X(x),y1:24,x2:X(x),y2:H-24,stroke:"#edf1f1","stroke-width":1}));if(Math.abs(x)>step*1e-8)grid.append(svgText(X(x),Math.min(H-12,Math.max(36,Y(0)+20)),fmt(x),{class:"tick","text-anchor":"middle"}));}
+    for(let j=0,y=Math.ceil(bottom/step)*step;y<=top&&j<100;j++,y+=step){if($("lattice").checked)grid.append(el("line",{x1:24,y1:Y(y),x2:W-24,y2:Y(y),stroke:"#edf1f1","stroke-width":1}));if(Math.abs(y)>step*1e-8)grid.append(svgText(Math.min(W-15,Math.max(20,X(0)-12)),Y(y)+4,fmt(y),{class:"tick","text-anchor":"end"}));}
+  }
+  const latticeCount=(Math.floor(right)-Math.ceil(left)+1)*(Math.floor(top)-Math.ceil(bottom)+1);$("scale-note").textContent="";
+  if($("lattice").checked&&latticeCount>0&&latticeCount<=2200&&scale>=6&&Math.max(Math.abs(left),Math.abs(right),Math.abs(top),Math.abs(bottom))<Number.MAX_SAFE_INTEGER){for(let x=Math.ceil(left);x<=Math.floor(right);x++)for(let y=Math.ceil(bottom);y<=Math.floor(top);y++)grid.append(el("circle",{cx:X(x),cy:Y(y),r:1.8,fill:"#cdd9de"}));}
+  else if($("lattice").checked)$("scale-note").textContent="Lattice dots hidden at this scale";
+  if(Y(0)>=20&&Y(0)<=H-20){axes.append(el("line",{x1:24,y1:Y(0),x2:W-24,y2:Y(0),stroke:"#b4c1c7","stroke-width":1.1}));axes.append(svgText(W-24,Y(0)-10,"x",{class:"axis-label"}));}
+  if(X(0)>=20&&X(0)<=W-20){axes.append(el("line",{x1:X(0),y1:24,x2:X(0),y2:H-24,stroke:"#b4c1c7","stroke-width":1.1}));axes.append(svgText(X(0)+10,28,"y",{class:"axis-label"}));}
+  const isDefault=points.length===6&&points.every((p,i)=>p[0]===[1,1,-1,-1,2,-1][i]&&p[1]===[0,1,-2,-3,3,0][i]);
+  for(let k=0;k<points.length-1;k++){
+    const p=points[k],q=points[k+1],xp=X(p[0]),yp=Y(p[1]),xq=X(q[0]),yq=Y(q[1]);if(![xp,yp,xq,yq].every(Number.isFinite))continue;
+    const actualEdge=state.analysis&&state.analysis.edges[k],bad=!Number.isFinite(actualEdge)||actualEdge===0;
+    lines.append(el("line",{x1:xp,y1:yp,x2:xq,y2:yq,stroke:bad?"#b96947":BLUE,"stroke-width":3,"stroke-linecap":"round",...(bad?{"stroke-dasharray":"6 4"}:{})}));
+    const arrowT=isDefault&&k===3?.23:.53;
+    if(Math.hypot(xq-xp,yq-yp)>2)lines.append(el("line",{x1:xp+(xq-xp)*(arrowT-.07),y1:yp+(yq-yp)*(arrowT-.07),x2:xp+(xq-xp)*arrowT,y2:yp+(yq-yp)*arrowT,stroke:BLUE,"stroke-width":3,"marker-end":"url(#direction-arrow)"}));
+    if(isDefault&&k===3)lines.append(el("line",{x1:xp+(xq-xp)*.78,y1:yp+(yq-yp)*.78,x2:xp+(xq-xp)*.84,y2:yp+(yq-yp)*.84,stroke:BLUE,"stroke-width":3,"marker-end":"url(#direction-arrow)"}));
+    if($("labels").checked){const length=Math.hypot(xq-xp,yq-yp)||1;let tx=(xp+xq)/2-(yq-yp)/length*25,ty=(yp+yq)/2+(xq-xp)/length*25;if(isDefault){const positions=[[1.65,.35],[-.67,-.60],[-1.65,-2.5],[.4,-1.35],[.1,1.7]];tx=X(positions[k][0]);ty=Y(positions[k][1]);}llsTag(labels,tx,ty,"a"+subscript(2*k)+" = "+fmt(a[2*k]),BLUE);}
+  }
+  axes.append(el("circle",{cx:X(0),cy:Y(0),r:3.6,fill:INK}));axes.append(svgText(X(0)-13,Y(0)-11,"O",{class:"vertex-label",fill:INK,"text-anchor":"end"}));
+  points.forEach((p,k)=>{
+    const px=X(p[0]),py=Y(p[1]);if(!Number.isFinite(px)||!Number.isFinite(py))return;
+    const hit=el("circle",{cx:px,cy:py,r:13,fill:"transparent","data-point-index":k,class:"vertex-hit"});hit.append(el("title",{},`Move ${pointName(k)} (${p.map(exact).join(", ")})`));dots.append(hit);
+    dots.append(el("circle",{cx:px,cy:py,r:5,fill:INK,stroke:"white","stroke-width":1.5,"data-point-index":k,class:"vertex-dot"}));
+    if($("point-labels").checked&&($("even-point-labels").checked||k%2===1)){const offsets=isDefault?[[12,25],[14,-15],[-30,-10],[-30,25],[10,-15],[-31,-12]]:null,offset=offsets?offsets[k]:[11,k%2?-13:23];dots.append(svgText(px+offset[0],py+offset[1],pointName(k),{class:"vertex-label point-label",fill:INK,"pointer-events":"none"}));}
+    if($("labels").checked&&k>0&&k<points.length-1){let tx=px+46,ty=py+27;if(isDefault){const positions=[[1.72,1],[-.2,-2.24],[-.25,-3.32],[2.6,2.72]];tx=X(positions[k-1][0]);ty=Y(positions[k-1][1]);}llsTag(labels,tx,ty,"a"+subscript(2*k-1)+" = "+fmt(a[2*k-1]),AMBER);}
+  });
+  if(!points.length)labels.append(svgText(W/2,H/2-55,"Click to place the first vertex",{fill:"#71848e","text-anchor":"middle","font-size":16}));
+  svg.append(grid,axes,lines,labels,dots);
+}
+function passageText(points){
+  for(let i=0;i<points.length-1;i++){const p=points[i],q=points[i+1],vx=q[0]-p[0],vy=q[1]-p[1],len2=vx*vx+vy*vy;if(!Number.isFinite(len2)||len2===0)continue;for(let j=0;j<points.length;j++){if(j===i||j===i+1)continue;const ux=points[j][0]-p[0],uy=points[j][1]-p[1],t=(ux*vx+uy*vy)/len2;if(t>1e-9&&t<1-1e-9&&Math.abs(ux*vy-uy*vx)<=1e-12*Math.max(len2,Math.abs(ux*vy),Math.abs(uy*vx)))return `${pointName(i)} → ${pointName(i+1)} passes through ${pointName(j)}. On this passage, continue straight along the arrow.`;}}
+  return "";
+}
+function render(){renderSummary();renderTable();drawPlot();renderPointList();}
+function setMode(next){mode=next;document.querySelectorAll('input[name="edit-mode"]').forEach(input=>{input.checked=input.value===mode;});$("mode-help").textContent=mode==="add"?"Click the plot to append a vertex. Points are joined in the order you add them.":"Drag a vertex to move it. You can also edit its coordinates in the table.";$("plot").classList.toggle("add-mode",mode==="add");}
+function pointerCoordinates(event){
+  const svg=$("plot"),matrix=svg.getScreenCTM();if(!matrix)return null;
+  const p=svg.createSVGPoint();p.x=event.clientX;p.y=event.clientY;const local=p.matrixTransform(matrix.inverse());
+  let x=state.view.cx+(local.x-W/2)/state.view.scale,y=state.view.cy-(local.y-H/2)/state.view.scale;
+  if($("snap").checked){x=Math.round(x);y=Math.round(y);}return Number.isFinite(x)&&Number.isFinite(y)?[x===0?0:x,y===0?0:y]:null;
+}
+$("plot").addEventListener("pointerdown",event=>{
+  if(event.button!==0||drag)return;const p=pointerCoordinates(event);if(!p)return;
+  if(mode==="add"){event.preventDefault();setPoints([...state.points,p]);return;}
+  const target=event.target.closest&&event.target.closest("[data-point-index]");if(!target)return;const index=Number(target.dataset.pointIndex);if(!state.points[index])return;
+  event.preventDefault();drag={index,pointerId:event.pointerId,before:snapshot(),saved:false};$("plot").setPointerCapture(event.pointerId);$("plot").classList.add("dragging");
+});
+$("plot").addEventListener("pointermove",event=>{
+  if(!drag||event.pointerId!==drag.pointerId)return;const p=pointerCoordinates(event);if(!p)return;const old=state.points[drag.index];if(old[0]===p[0]&&old[1]===p[1])return;
+  event.preventDefault();if(!drag.saved){saveUndo(drag.before);drag.saved=true;}state.points[drag.index]=p;state.source="edited";state.canonicalSequence=null;invalidateOutputs();clearCoordinateError();analyze();syncSequenceInput();render();
+});
+function endDrag(event,cancel){if(!drag||event.pointerId!==drag.pointerId)return;const old=drag;drag=null;$("plot").classList.remove("dragging");if($("plot").hasPointerCapture(event.pointerId))$("plot").releasePointerCapture(event.pointerId);if(cancel&&old.saved){history.pop();state.points=copyPoints(old.before.points);state.source=old.before.source;state.canonicalSequence=old.before.canonicalSequence?[...old.before.canonicalSequence]:null;state.view={...old.before.view};analyze();syncSequenceInput();render();}}
+$("plot").addEventListener("pointerup",event=>endDrag(event,false));$("plot").addEventListener("pointercancel",event=>endDrag(event,true));
+$("sequence-form").addEventListener("submit",event=>{event.preventDefault();drawFromInput();});
+$("sequence").addEventListener("input",()=>{draft=true;$("error-message").hidden=true;$("sequence").removeAttribute("aria-invalid");renderStatus();});
+$("point-list-form").addEventListener("submit",event=>{event.preventDefault();drawFromPointList();});
+$("point-list").addEventListener("input",()=>{pointListDraft=true;clearPointListError();renderPointList();});
+$("use-current-points").addEventListener("click",()=>{pointListDraft=false;renderPointList();});
+$("reset").addEventListener("click",()=>{$("sequence").value=EXAMPLE;drawFromInput();setMode("move");});
+$("fit").addEventListener("click",()=>{fitView();drawPlot();});
+$("new-line").addEventListener("click",()=>{saveUndo();state.view=defaultView();setMode("add");setPoints([],{undo:false});});
+$("undo").addEventListener("click",()=>{if(!history.length||drag)return;const old=history.pop();state.points=copyPoints(old.points);state.source=old.source;state.canonicalSequence=old.canonicalSequence?[...old.canonicalSequence]:null;state.view={...old.view};setMode(old.mode);invalidateOutputs();clearCoordinateError();analyze();syncSequenceInput();render();});
+document.querySelectorAll('input[name="edit-mode"]').forEach(input=>input.addEventListener("change",()=>{if(input.checked)setMode(input.value);}));
+$("append-form").addEventListener("submit",event=>{event.preventDefault();try{const p=[parseNumber($("append-x").value),parseNumber($("append-y").value)];setPoints([...state.points,p],{fit:true});$("append-x").value="";$("append-y").value="";$("append-x").focus();}catch(error){coordinateError(error.message);}});
+for(const id of ["labels","point-labels","even-point-labels","lattice"]){$(id).addEventListener("change",()=>{$("even-point-labels").disabled=!$("point-labels").checked;invalidateTikz("Display options changed. Generate TikZ again.");drawPlot();});}
+async function copyText(text,button,label){
+  try{await navigator.clipboard.writeText(text);$("manual-copy").hidden=true;button.textContent="Copied";}
+  catch{const field=$("manual-copy-text");field.value=text;$("manual-copy").hidden=false;button.textContent="Copy manually";if(typeof $("manual-copy").scrollIntoView==="function")$("manual-copy").scrollIntoView({block:"nearest"});field.focus();if(typeof field.select==="function")field.select();}
+  setTimeout(()=>{button.textContent=label;},1800);
+}
+$("close-manual-copy").addEventListener("click",()=>{$("manual-copy").hidden=true;});
+$("copy").addEventListener("click",()=>copyText(JSON.stringify(state.points,null,2),$("copy"),"Copy"));
+$("compute-dual").addEventListener("click",()=>{
+  if(!validSequence())return;
+  try{dual=LLSMath.adjacencyDual([...currentSequence()]);$("dual-output").value=sequenceText(dual.sequence);$("dual-result").hidden=false;$("dual-status").textContent=dual.domain==="positive-integer"?"Adjacent-angle dual · positive integer domain":"Formal extension · real elements";
+    const warnings=$("dual-warnings");warnings.replaceChildren();const list=Array.isArray(dual.warnings)?dual.warnings:[];list.forEach(text=>{const p=document.createElement("p");p.textContent=text;warnings.append(p);});warnings.hidden=!list.length;$("draw-dual").disabled=!dual.canDraw;$("copy-dual").textContent="Copy sequence";
+  }catch(error){dual=null;$("dual-result").hidden=true;$("dual-status").textContent=error.message;}
+});
+$("draw-dual").addEventListener("click",()=>{if(!dual||!dual.canDraw)return;try{const sequence=[...dual.sequence];setPoints(canonicalPoints(sequence),{source:"canonical",canonicalSequence:sequence,fit:true});}catch(error){$("dual-status").textContent=error.message;}});
+$("copy-dual").addEventListener("click",()=>{if(dual)copyText(sequenceText(dual.sequence),$("copy-dual"),"Copy sequence");});
+function showCombination(result,message){
+  combination=result;$("combination-output").value=sequenceText(result.sequence);$("combination-result").hidden=false;$("combination-status").textContent=message;$("copy-combination").textContent="Copy combination";
+  const warnings=$("combination-warnings");warnings.replaceChildren();result.warnings.forEach(text=>{const p=document.createElement("p");p.textContent=text;warnings.append(p);});warnings.hidden=!result.warnings.length;
+}
+function drawCombination(reverseDual=false){
+  if(!validSequence())return;
+  let result=null;
+  try{
+    const a=[...currentSequence()],b=LLSMath.adjacencyDual(a),tail=reverseDual?[...b.sequence].reverse():b.sequence,sequence=[...a,-1,...tail];
+    result={sequence,warnings:[...b.warnings]};
+    if(!b.canDraw)throw new RangeError("The dual has a zero edge term, so the combination cannot be drawn.");
+    const points=canonicalPoints(sequence);
+    setPoints(points,{source:"canonical",canonicalSequence:sequence,fit:true});
+    showCombination(result,`${reverseDual?"LLS + reversed dual drawn":"Combined line drawn"} · ${sequence.length} terms · ${points.length-1} edges · ${points.length} vertices. Undo restores the previous line.`);
+  }catch(error){
+    const message=error.message+" The plotted vertices have not changed.";
+    if(result)showCombination(result,message);else{invalidateCombination();$("combination-status").textContent=message;}
+  }
+}
+$("draw-combination").addEventListener("click",()=>drawCombination());
+$("draw-reversed-combination").addEventListener("click",()=>drawCombination(true));
+$("copy-combination").addEventListener("click",()=>{if(combination)copyText(sequenceText(combination.sequence),$("copy-combination"),"Copy combination");});
+$("generate-tikz").addEventListener("click",()=>{
+  if(state.points.length<2)return;
+  try{tikz=LLSTikZ.toTikz(copyPoints(state.points),currentSequence(),{showLabels:$("labels").checked,showPointLabels:$("point-labels").checked,showEvenPointLabels:$("even-point-labels").checked,showGrid:$("lattice").checked});$("tikz-output").value=tikz;$("tikz-result").hidden=false;$("tikz-status").textContent="Generated from the current coordinates and display options.";$("copy-tikz").textContent="Copy code";}
+  catch(error){tikz="";$("tikz-result").hidden=true;$("tikz-status").textContent=error.message;}
+});
+$("copy-tikz").addEventListener("click",()=>{if(tikz)copyText(tikz,$("copy-tikz"),"Copy code");});
+$("download-tikz").addEventListener("click",()=>{if(!tikz)return;const url=URL.createObjectURL(new Blob([tikz],{type:"application/x-tex;charset=utf-8"})),link=document.createElement("a");link.href=url;link.download="lls_broken_line.tex";document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+drawFromInput({undo:false});
+
+</script>
+</body></html>
